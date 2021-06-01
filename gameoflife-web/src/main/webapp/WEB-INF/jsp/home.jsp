@@ -61,7 +61,11 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 <h2>Welcome to DEVOP's Game Of Life!</h2>
+=======
+<h2>Welcome to JENKIN's Game Of Life!</h2>
+>>>>>>> 3720fc23a2b108e80eca96dd19a21044ab5a9eac
 
 <div class="intro">
     <p>This is a really cool web version of Conway's famous Game Of

@@ -12,7 +12,7 @@ stages {
 
       // Get some code from a GitHub repository
 
-      git 'https://github.com/raknas999/game-of-life.git'
+      git 'https://github.com/raknas999/GOL-Repo.git'
 
       // Get the Maven tool.
      
@@ -49,30 +49,53 @@ stages {
         withSonarQubeEnv('sonarqube') {
             sh "${scannerHome}/bin/sonar-scanner"
         }
-        timeout(time: 10, unit: 'MINUTES') {
+     /*   timeout(time: 10, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
-        }
+        } */
     }
 }
-     stage('Artifact upload') {
+/*     stage('Artifact upload') {
       steps {
      nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife1', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
       }
- }
+ } */
     stage('Build and Push Docker Image') {
       steps {
-        sh label: '', script: '''docker build -t gameoflife-image:$BUILD_NUMBER .
-                                 docker tag gameoflife-image:$BUILD_NUMBER docker.io/raknas000/gameoflife-image:$BUILD_NUMBER
-                                 docker push docker.io/raknas000/gameoflife-image:$BUILD_NUMBER'''
+        sh label: '', script: '''sudo docker build -t gameoflife-image:$BUILD_NUMBER .
+                                 sudo docker tag gameoflife-image:$BUILD_NUMBER docker.io/raknas000/gameoflife-image:$BUILD_NUMBER
+                                 sudo docker push docker.io/raknas000/gameoflife-image:$BUILD_NUMBER'''
+                                 
       }
  }
-}
+  stage('Update Image Version') {
+      steps {
+        sh label: '', script: '''sed -i s/latest/$BUILD_NUMBER/ deploy-kube.yml'''
+
+      }
+ }
+  stage('Apply Kubernetes files') {
+            steps {
+             sh label: '', script: '''scp *.yml jenkins@172.31.18.160:/home/jenkins
+                                  ssh jenkins@172.31.18.160 kubectl apply -f deploy-kube.yml
+                                  ssh jenkins@172.31.18.160 kubectl apply -f service.yml'''
+           
+        }
+     }
+/* stage('Deploy to Kubernetes') {
+         steps {
+         withKubeConfig([credentialsId: 'jenkins-kube']) {
+         sh 'kubectl config set-context $(kubectl config current-context) --namespace=default'
+         sh 'kubectl apply -f GOL-Deploy.yml'
+        }
+        }
+     }*/
+}     
 post {
         success {
             archiveArtifacts 'gameoflife-web/target/*.war'
         }
         failure {
-            mail to:"sankar.dadi@qentelli.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
+            mail to:"raknas000@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
         }
     }       
 }
