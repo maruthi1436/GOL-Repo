@@ -1,6 +1,11 @@
 nnb hii This is a simple demonstration application used in the [Jenkins: The Definitive Guide](http://wakaleo.com/books/jenkins-the-definitive-guide) book.
 
+<<<<<<< HEAD
 ## Building the project Game-Of-Life
+=======
+
+## Building the project Game-of-life
+>>>>>>> 0eacb6749353746503fb3b2b9189d5352ef889b2
 
 The project is a simple multi-module Maven project. To build the whole project, just run `mvn install` from the root directory.
 

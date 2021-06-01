@@ -26,10 +26,14 @@
   - name: Deploy War File
     get_url:
 <<<<<<< HEAD
+<<<<<<< HEAD
        url: http://13.126.60.229:8081/nexus/service/local/artifact/maven/redirect?r=releases&g=com.wakaleo.gameoflife&a=gameoflife&p=war&v=LATEST
 =======
        url: http://65.1.64.216:8081/nexus/service/local/artifact/maven/redirect?r=releases&g=com.wakaleo.gameoflife&a=gameoflife&p=war&v=LATEST
 >>>>>>> 3720fc23a2b108e80eca96dd19a21044ab5a9eac
+=======
+       url: http://65.1.64.216:8081/nexus/service/local/artifact/maven/redirect?r=releases&g=com.wakaleo.gameoflife&a=gameoflife&p=war&v=LATEST
+>>>>>>> 0eacb6749353746503fb3b2b9189d5352ef889b2
        dest: /usr/share/tomcat/webapps/gameoflife.war
   - name: Start Tomcat
     service: name=tomcat state=started
